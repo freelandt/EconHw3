@@ -1,0 +1,113 @@
+---
+title: "EconHw3"
+author: "Trevor Freeland"
+date: "April 23, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, comment = NA, warning = F)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(pander)
+```
+
+```{r}
+table6 <- read_xls("~/R/Econometrics/Tables/Table7_6.xls")
+table6 <- table6[-(1:10),]
+colnames(table6) <- table6[1,]
+table6 <- table6[-1,]
+table6[] <- sapply(table6[], as.numeric)
+```
+
+
+```{r}
+day8 <- read.csv("~/R/Econometrics/Tables/Day08.csv")
+```
+
+Tuesday Stuff:
+
+```{r}
+ggplot(day8, aes(x = log(X3), y = log(Y))) + geom_point() + stat_smooth(method = "lm")
+day8.lm <- lm(log(Y)~log(X2) + log(X3), data = day8)
+day8.lm2 <- lm(log(Y)~log(X2) + log(X3), data = day8)
+AIC(day8.lm2)
+AIC(day8.lm)
+```
+
+##1
+
+A: False
+
+B: False
+
+C: False
+
+D: True
+
+##2
+
+###(A)
+
+$\alpha_2$ = -2228 -> Holding all else constant, if the average wholesale price of roses went up by $1/dozen, on average the number of roses sold would decrease by 2227.
+
+$\alpha_3$ = 1251 -> Holding all else constant, if the average wholesale price of carnations went up by $1/dozen, on average the number of roses sold would increase by 1251.
+
+$\alpha_4$ = 6.3 -> Holding all else constant, if the average weekly family disposable income grew by $1/week, on average the number of roses sold would increase by 6.
+
+$\alpha_5$ = -197 -> Holding all else constant, on average the quantity of roses sold in a quarter decreased by 197 roses per quarter starting in 1971-III. 
+
+See table below for full model summary.
+
+```{r}
+rose.lm <- lm(Y~X2 + X3 + X4 + X5, data = table6)
+pander(summary(rose.lm))
+```
+
+###(B)
+
+$\beta_2$ = -1.17 -> Holding all else constant, if the average wholesale price of roses went up by 1% per dozen, on average the number of roses sold would decrease by 1.17%.
+
+$\beta_3$ = .74 -> Holding all else constant, if the average wholesale price of carnations went up by 1% per dozen, on average the number of roses sold would increase by .74%.
+
+$\beta_4$ = 1.15 -> Holding all else constant, if the average weekly family disposable income grew by 1% per week, on average the number of roses sold would increase by 1.15%.
+
+$\beta_5$ = -.18 -> Holding all else constant, on average the quantity of roses sold in a quarter decreased by 3% roses per quarter starting in 1971-III. 
+
+See table below for full model summary.
+
+```{r}
+rose.loglm <- lm(log(Y)~log(X2) + log(X3) + log(X4) + X5, data = table6)
+summary(rose.loglm)
+```
+
+###(C)
+
+Own-Price: We would expect as the price of the product increased, demand would decrease. (Holding everything else constant)
+
+Cross-Price: We would expect as the price of a competitor's product increases, the demand for our product would increase. (Holding everything else constant)
+
+Income Elasticity: We would expect as our buyers had more money to spend, that the demand for our product would increase. (Holding everything else constant)
+
+Our results concur with our expectations. 
+
+###(D)
+
+
+
+###(E)
+
+
+
+###(F)
+
+##3
+
+##4
+
+##5
+
+##Challenge Problem
