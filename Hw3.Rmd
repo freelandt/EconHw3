@@ -21,6 +21,11 @@ table6 <- table6[-(1:10),]
 colnames(table6) <- table6[1,]
 table6 <- table6[-1,]
 table6[] <- sapply(table6[], as.numeric)
+table9 <- read_xls("~/R/Econometrics/Tables/Table7_9.xls")
+table9 <- table9[-(1:9),]
+colnames(table9) <- table9[1,]
+table9 <- table9[-1,]
+table9[] <- sapply(table9[], as.numeric)
 ```
 
 ##1
@@ -60,7 +65,7 @@ $\beta_3$ = .74 -> Holding all else constant, if the average wholesale price of 
 
 $\beta_4$ = 1.15 -> Holding all else constant, if the average weekly family disposable income grew by 1% per week, on average the number of roses sold would increase by 1.15%.
 
-$\beta_5$ = -.18 -> Holding all else constant, on average the quantity of roses sold in a quarter decreased by 3% roses per quarter starting in 1971-III. 
+$\beta_5$ = -.03 -> Holding all else constant, on average the quantity of roses sold in a quarter decreased by 3% roses per quarter starting in 1971-III. 
 
 See table below for full model summary.
 
@@ -81,12 +86,19 @@ Our estimates in our model concur with our expectations.
 
 ###(D)
 
-Own-Price:
+Own-Price: 11.5%
 
-Cross-Price:
+Cross-Price: 5.6%
 
-Income Elasticity:
+Income Elasticity: .02%
 
+See code for calculations.
+
+```{r}
+own.price <- ((10816-(10816-2228))/(10816+(10816-2228)))/(1/1)
+cross.price <- (1/(10816+10186+1251)) * (1251)/(1)
+income <- ((6)/(10816+10816+6))/(1/1)
+```
 ###(E)
 
 I would choose to use the log-log model for our analysis. Especially in this setting, it seems we are very interested in Own-Price/Cross-Price/Income-Elasticity, which are all far easier to find, understand and interpret using a log-log model. Also knowing the scales of both of the variables are extremely large, typically you would use a log-log model instead of a linear model. 
@@ -97,7 +109,7 @@ We want to test to see if the estimate for log(X2) = 1. So lets make a test stat
 
 $$t = \frac{-1.17 - 1}{.49} = -4.43$$
 
-Even before calculating the actual p-value we know that with a t stat over 4 standard deviations away from the hypothesized value that it is very unlikely to happen. THe p-value we get when testing out t-stat we get a p-value smaller than .001, which is strong evidence that our null hypothesis is wrong, and so we do not believe that demand is own-price unit elastic.
+Even before calculating the actual p-value we know that with a t stat over 4 standard deviations away from the hypothesized value that it is very unlikely to happen. The p-value we get when testing our t-stat is smaller than .001, which is strong evidence that our null hypothesis is wrong, and so we do not believe that demand is own-price unit elastic.
 
 ```{r}
 t.stat <- (-1.17 - 1)/.49
@@ -105,6 +117,22 @@ p <- pt(t.stat, 11)
 ```
 
 ##3
+
+###(A)
+
+###(B)
+
+###(C)
+
+###(D)
+
+###(E)
+
+###(F)
+
+###(G)
+
+###(H)
 
 ##4
 
