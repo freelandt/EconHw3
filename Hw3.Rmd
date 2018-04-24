@@ -23,21 +23,6 @@ table6 <- table6[-1,]
 table6[] <- sapply(table6[], as.numeric)
 ```
 
-
-```{r}
-day8 <- read.csv("~/R/Econometrics/Tables/Day08.csv")
-```
-
-Tuesday Stuff:
-
-```{r}
-ggplot(day8, aes(x = log(X3), y = log(Y))) + geom_point() + stat_smooth(method = "lm")
-day8.lm <- lm(log(Y)~log(X2) + log(X3), data = day8)
-day8.lm2 <- lm(log(Y)~log(X2) + log(X3), data = day8)
-AIC(day8.lm2)
-AIC(day8.lm)
-```
-
 ##1
 
 A: False
@@ -92,17 +77,32 @@ Cross-Price: We would expect as the price of a competitor's product increases, t
 
 Income Elasticity: We would expect as our buyers had more money to spend, that the demand for our product would increase. (Holding everything else constant)
 
-Our results concur with our expectations. 
+Our estimates in our model concur with our expectations. 
 
 ###(D)
 
+Own-Price:
 
+Cross-Price:
+
+Income Elasticity:
 
 ###(E)
 
-
+I would choose to use the log-log model for our analysis. Especially in this setting, it seems we are very interested in Own-Price/Cross-Price/Income-Elasticity, which are all far easier to find, understand and interpret using a log-log model. Also knowing the scales of both of the variables are extremely large, typically you would use a log-log model instead of a linear model. 
 
 ###(F)
+
+We want to test to see if the estimate for log(X2) = 1. So lets make a test stat:
+
+$$t = \frac{-1.17 - 1}{.49} = -4.43$$
+
+Even before calculating the actual p-value we know that with a t stat over 4 standard deviations away from the hypothesized value that it is very unlikely to happen. THe p-value we get when testing out t-stat we get a p-value smaller than .001, which is strong evidence that our null hypothesis is wrong, and so we do not believe that demand is own-price unit elastic.
+
+```{r}
+t.stat <- (-1.17 - 1)/.49
+p <- pt(t.stat, 11)
+```
 
 ##3
 
