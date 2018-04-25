@@ -31,6 +31,9 @@ table4 <- table4[-1,]
 colnames(table4) <- table4[1,]
 table4 <- table4[-1,]
 table4[] <- sapply(table4[], as.numeric)
+savings <- read.csv("~/R/Econometrics/EconHw3/PersonalSaving.csv")
+income <- read.csv("~/R/Econometrics/EconHw3/PersonalIncome.csv")
+personal <- left_join(income, savings)
 ```
 
 ##1
@@ -250,6 +253,10 @@ mean(beta2)
 
 ##5
 
+###(A)
 
+PSAVE -> Save
+
+MEPAINUSA672N -> Personal Income
 
 ##Challenge Problem
