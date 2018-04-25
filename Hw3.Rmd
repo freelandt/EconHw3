@@ -26,6 +26,11 @@ table9 <- table9[-(1:9),]
 colnames(table9) <- table9[1,]
 table9 <- table9[-1,]
 table9[] <- sapply(table9[], as.numeric)
+table4 <- read_xls("~/R/Econometrics/Tables/Table6_4.xls")
+table4 <- table4[-1,]
+colnames(table4) <- table4[1,]
+table4 <- table4[-1,]
+table4[] <- sapply(table4[], as.numeric)
 ```
 
 ##1
@@ -71,7 +76,7 @@ See table below for full model summary.
 
 ```{r}
 rose.loglm <- lm(log(Y)~log(X2) + log(X3) + log(X4) + X5, data = table6)
-summary(rose.loglm)
+pander(summary(rose.loglm))
 ```
 
 ###(C)
@@ -105,37 +110,146 @@ I would choose to use the log-log model for our analysis. Especially in this set
 
 ###(F)
 
-We want to test to see if the estimate for log(X2) = 1. So lets make a test stat:
+In order to test that the demand in own-price unit elastic we need to see if for every% increase in cost we see an equal percent decrease in sales. What this means for our regression model is that we want to test to see if the estimate for log(X2) = -1. So lets make a test stat:
 
-$$t = \frac{-1.17 - 1}{.49} = -4.43$$
+$$t = \frac{-1.17 - (-1)}{.49} = -.35$$
 
-Even before calculating the actual p-value we know that with a t stat over 4 standard deviations away from the hypothesized value that it is very unlikely to happen. The p-value we get when testing our t-stat is smaller than .001, which is strong evidence that our null hypothesis is wrong, and so we do not believe that demand is own-price unit elastic.
+Even before calculating the actual p-value we know that with a t stat under 1 standard deviation away from the hypothesized value that we won't be able to reject the null hypothesis. The p-value we get when testing our t-stat is .37, which is to large to be any evidence that our null hypothesis is wrong, and so we can not reject the null hypothesis that the demand is own-price unit elastic. 
 
 ```{r}
-t.stat <- (-1.17 - 1)/.49
+t.stat <- (-1.17 + 1)/.49
 p <- pt(t.stat, 11)
 ```
 
 ##3
 
+
 ###(A)
+
+I would chose the **5th** demand function. The 4th and 5th demand functions have very similar information, but there is likely to be correlation between X4 and X5, so if we combine them into one variable we won't have to worry about high correlation between them.
 
 ###(B)
 
+The coefficient of lnX2 would be interpreted as the income elasticity of demand for chicken.
+
+
+The coefficient of lnX3 would be interpreted as the own-price elasticity of demand for chicken. 
+
 ###(C)
+
+Model (2) is not accounting for the effect of beef prices in the consumption of chickens whereas model (4) does take into account the price of beef.
 
 ###(D)
 
+There is likely to be correlation between the prices of beef and pork, and so having them both in the model could lead to issues.
+
 ###(E)
+
+I would prefer model (5) because it gets rid of the potential correlation and colinearity effects of having both the individual prices of beef and the individual prices of pork in the model.
 
 ###(F)
 
+They are substitute products for chicken. The reason we know this is because as the price of beef and pork go up, hodling everything else constant, the consumption of chicken rises. This is behavior indicative of substitute products. 
+
+To verify this thought, I ran the regression of chicken consumption soley against prices of pork and beef individually and both estimates were posotive, indicating an increase in pork or beef price leads to an increase in chicken consumption, implying that beef and pork are substitutes for chicken.
+
+```{r}
+testmodel <- lm(log(Y)~log(X4), data = table9)
+coef(testmodel)
+testmodel2 <- lm(log(Y)~log(X5), data = table9)
+coef(testmodel2)
+```
+
+
 ###(G)
+
+Our model: Y = $\beta_0$ + $\beta_1$(DisposableIncome) + $\beta_2$(PriceChicken) + $\beta_3$(PriceChickenSubs) + $\epsilon$, $\epsilon$~N(0,$\sigma$)
+
+We will focus on the interpretations of $\beta_1$, $\beta_2$, $\beta_3$. For full model summary and other estimates see table below.
+
+
+$\beta_1$ = .48 -> Holding all else constant, if the average real disposable income per capita increased by 1%, on average the number of chickens consumed per capita (lbs) would increase by .41%.
+
+$\beta_2$ = -.35 -> Holding all else constant, if the average real retail price of chicken per lb increased by 1%, on average the number of chickens consumed per capita (lbs) would decrease by .35%.
+
+$\beta_3$ = -.06 -> Holding all else constant, if the average composite real price of chicken substitues per lb increased by 1%, on average the number of chickens consumed per capita (lbs) would decrease by .06%.
+
+```{r}
+model5 <- lm(log(Y)~log(X2) + log(X3) + log(X6), data = table9)
+pander(summary(model5))
+```
 
 ###(H)
 
+Here are the difference gamma and beta values:
+
+$\gamma_2$ = .41
+
+$\gamma_3$ = -.44
+
+$\beta_2$ = .48
+
+$\beta_3$ = -.35
+
+Because we are only including the price of pork and are not accounting for the price of beef at all, we are changing our income and own-price elasticity estimates. We are saying that the same change in price is leading to a larger decrease in sales in model 2 and we are saying the the same change in income is leading to a smaller increase in chicken sales in model 2. The differences are not that large her, but have incorrect other variables could potentially greatly change the estimates of our effects of interests.
+
+See below for model 2 summary.
+
+```{r}
+model2 <- lm(log(Y)~log(X2) + log(X3) + log(X4), data = table9)
+pander(summary(model2))
+```
+
 ##4
 
+Running the simulation 10 times, and running it 1000 times we get on average estimates that are slightly larger than the true population estimates. I doubled checked by changing the seeds multiple times and I never got average estimates that were equal to or smaller than the true population estimates, always slightly larger. 
+
+See code below for simulations and results.
+
+```{r}
+set.seed(123456)
+N <- 64 
+sims <- 10
+intercept <- numeric(sims)
+beta1 <- numeric(sims)
+beta2 <- numeric(sims)
+
+for (i in 1:sims){
+  rand <- rnorm(N, 0, 42)
+  Y <- table4$CM - rand
+  model <- lm(Y~PGNP+FLR, data = table4)
+  intercept[i] <- coef(model)[1]
+  beta1[i] <- coef(model)[2]
+  beta2[i] <- coef(model)[3]
+}
+mean(intercept)
+mean(beta1)
+mean(beta2)
+```
+
+```{r}
+set.seed(1256)
+N <- 64 
+sims <- 1000
+intercept <- numeric(sims)
+beta1 <- numeric(sims)
+beta2 <- numeric(sims)
+
+for (i in 1:sims){
+  rand <- rnorm(N, 0, 42)
+  Y <- table4$CM - rand
+  model <- lm(Y~PGNP+FLR, data = table4)
+  intercept[i] <- coef(model)[1]
+  beta1[i] <- coef(model)[2]
+  beta2[i] <- coef(model)[3]
+}
+mean(intercept)
+mean(beta1)
+mean(beta2)
+```
+
 ##5
+
+
 
 ##Challenge Problem
