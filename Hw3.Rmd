@@ -138,4 +138,17 @@ p <- pt(t.stat, 11)
 
 ##5
 
+###(A)
+
+PSAVE -> Save
+
+MEPAINUSA672N -> Personal Income
+
+
+```{r}
+savings <- read.csv("~/R/Econometrics/EconHw3/PersonalSaving.csv")
+income <- read.csv("~/R/Econometrics/EconHw3/PersonalIncome.csv")
+personal <- left_join(income, savings)
+```
+
 ##Challenge Problem
