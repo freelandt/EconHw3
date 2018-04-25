@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE, message = F, comment = NA, warning = F)
 ```{r}
 library(tidyverse)
 library(readxl)
+library(stringr)
 library(pander)
 ```
 
@@ -253,10 +254,62 @@ mean(beta2)
 
 ##5
 
+Unfortunately I wasn't able to complete problem 5, I ran out of time. I was also running into the fact that my data is very different from the data used in the textbook and so it didn't seem to really be working with everything we were being asked to use. 
+
 ###(A)
 
 PSAVE -> Save
 
 MEPAINUSA672N -> Personal Income
+
+
+###(B)
+
+These are definitely not the same plots as the ones in the book but this is what I got with the data that I had. 
+
+```{r}
+personal$year <- as.numeric(substring(personal$DATE,1,4))
+personal$Income <- personal$MEPAINUSA672N
+par(mfrow = c(1,2))
+line1 <- lm(PSAVE~Income, data = filter(personal, year %in% c(1974:1981)) )
+line2 <- lm(PSAVE~Income, data = filter(personal, year %in% c(1982:1995)) )
+plot(PSAVE~Income, data = filter(personal, year %in% c(1974:1981)), ylab="Savings", main="1974-1981")
+abline(line1)
+plot(PSAVE~Income, data = filter(personal, year %in% c(1982:1995)), ylab="Savings", main = "1982-1995")
+abline(line2)
+```
+
+
+###(C)
+
+```{r}
+par(mfrow = c(1,2))
+line3 <- lm(PSAVE~Income, data = filter(personal, year > 1995) )
+line4 <- lm(PSAVE~Income, data = personal )
+plot(PSAVE~Income, data = personal, ylab="Savings", main="1996-2016")
+abline(line3)
+plot(PSAVE~Income, data = personal, ylab="Savings", main = "1974-2016")
+abline(line4)
+```
+
+###(D)
+
+```{r}
+line5 <- lm(PSAVE~Income, data = filter(personal, year < 1995))
+pander(summary(line1))
+pander(summary(line2))
+pander(summary(line5))
+```
+
+###(E)
+
+###(F)
+
+###(G)
+
+
+
+
+
 
 ##Challenge Problem
